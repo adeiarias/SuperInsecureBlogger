@@ -1,0 +1,6 @@
+{
+    "require": {
+        "firebase/php-jwt": "^6.3",
+        "twig/twig": "1.19.0"
+    }
+}

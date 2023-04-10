@@ -1,0 +1,43 @@
+version: "3"
+services:
+  contenedor_mysql:
+    image: mysql:5.7
+    container_name: mysql-container
+    environment:
+        MYSQL_DATABASE: app
+        MYSQL_USER: seper
+        MYSQL_PASSWORD: OasBOrESteNDOMen
+        MYSQL_ROOT_PASSWORD: OasBOrESteNDOMen
+    volumes:
+      - ./app/mysql:/var/lib/mysql
+      - ./app/app.sql:/docker-entrypoint-initdb.d/app.sql
+    expose:
+      - 3306
+    ports:
+      - 3306:3306
+
+  application:
+    build: ./app
+    container_name: web_app
+    expose:
+      - 80
+    ports:
+      - 80:80
+    volumes:
+      - ./app/html:/var/www/html
+    links:
+      - contenedor_mysql
+
+  app:
+    build: ./auth_api
+    ports:
+      - 8000:8000
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/
+
+  mongo:
+    image: mongo
+    volumes:
+      - ./auth_api/data/db:/data/db
