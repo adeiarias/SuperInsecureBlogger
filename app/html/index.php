@@ -31,50 +31,54 @@ if (isset($_COOKIE['auth'])) {
 <html>
         <head>
                 <meta charset="utf-8">
-                <title>Super Secure Blogger</title>
+                <title>Super (In)Secure Blogger</title>
                 <link href="admin.css" rel="stylesheet" type="text/css">
                 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
         </head>
         <body class="loggedin">
                 <nav class="navtop">
                         <div>
-                                <h1>Super Secure Blogger</h1>
+                                <h1>Super (In)Secure Blogger</h1>
                                 <a href="login.html"><i class="fas fa-user-circle"></i>Login</a>
                                 <a href="register.html"><i class="fas fa-user-plus"></i>Register</a>
                         </div>
                 </nav>
                 <div class="content">
-                        <h2>Hi! Welcome to Blogger!. <br>
-						Register yourself to create your first publication. What are you waiting for!</h2>
+                        <h2>Hi! Welcome to Blogger!<br>
+			Register yourself to create your first publication. <br>
+                        What are you waiting for!</h2>
                 </div>
 				<div class="content">
                         <h2>Latest publications</h2>
 						<?php
-                                        $stmt = $con->prepare('SELECT file, priority FROM tasks WHERE fixed = 0');
+                                        $stmt = $con->prepare('SELECT file, user, title, date FROM blog');
                                         $stmt->execute();
-                                        $stmt->bind_result($description, $priority);
+                                        $stmt->bind_result($file, $user, $title, $date);
                                         $number = 1;
                                         while ($stmt->fetch()) {
-                                                $descr = file_get_contents('5bf5dee65aca1cd1497ac8f30ccaf2815e75401e/'.$description);
                                                 echo "<div>";
                                                 echo "<p>Publication number $number</p>";
                                                 echo "<table>";
                                                 echo "<tr>";
                                                 echo "<td>Title: ";
-                                                echo $descr;
+                                                echo $title;
                                                 echo "</td>";
                                                 echo "</tr>";
                                                 echo "<tr>";
                                                 echo "<td>User: ";
-                                                echo $priority;
+                                                echo $user;
                                                 echo "</td>";
                                                 echo "</tr>";
                                                 echo "<tr>";
-                                                echo "<td>Date: No</td>";
+                                                echo "<td>Date: ";
+                                                echo $date;
+                                                echo "</td>";
                                                 echo "</tr>";
                                                 echo "</table>";
-                                                echo "</div>";
                                                 $number++;
+                                                echo "<br>";
+                                                echo "<button src='submit' class='formbold-btn'>Access to publication (Auth required)</button>";
+                                                echo "</div>";
                                         }
                                         $stmt->close();
                                 ?>

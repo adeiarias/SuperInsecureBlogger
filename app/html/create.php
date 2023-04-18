@@ -19,13 +19,12 @@ if (!isset($_COOKIE['auth'])) {
 		$decoded = JWT::decode($cookie, new Key($key, 'HS256'));
 		$decoded_array = (array) $decoded;
 		$user = $decoded_array['username'];
-		$role = $decoded_array['role'];
 
         $filename = uniqid().'.txt';
-        system("echo ".$_POST['task']." > /var/www/html/5bf5dee65aca1cd1497ac8f30ccaf2815e75401e/".$filename);
+        system("echo ".$_POST['message']." > /var/www/html/5bf5dee65aca1cd1497ac8f30ccaf2815e75401e/".$filename);
 
-        if ($stmt = $con->prepare('INSERT INTO tasks (file, priority, fixed, privileged) VALUES (?, ?, 0, 0)')) {
-            $stmt->bind_param('ss', $filename, $_POST['priority']);
+        if ($stmt = $con->prepare('INSERT INTO blog (file, user, title, date) VALUES (?, ?, ?, ?)')) {
+            $stmt->bind_param('ssss', $filename, $user, $_POST['title'], date("Y-m-d H:i:s"));
             $stmt->execute();
             $stmt->close();
             header('Location: home.php');

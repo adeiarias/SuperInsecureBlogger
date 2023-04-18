@@ -56,8 +56,8 @@ if (!isset($_COOKIE['auth'])) {
         <label for="name" class="formbold-form-label"> Title </label>
         <input
           type="text"
-          name="priority"
-          id="priority"
+          name="title"
+          id="title"
           placeholder="Full Name"
           class="formbold-form-input"
         />
@@ -67,8 +67,8 @@ if (!isset($_COOKIE['auth'])) {
         <label for="message" class="formbold-form-label"> Description </label>
         <textarea
           rows="6"
-          name="task"
-          id="task"
+          name="message"
+          id="message"
           placeholder="Type your message"
           class="formbold-form-input"
         ></textarea>
@@ -82,38 +82,43 @@ if (!isset($_COOKIE['auth'])) {
 </div>
                 </div>
 <div class="content">
-                        <h2>Latest publications</h2>
-                        <?php
-                                        $stmt = $con->prepare('SELECT file, priority FROM tasks WHERE fixed = 0');
-                                        $stmt->execute();
-                                        $stmt->bind_result($description, $priority);
-                                        $number = 1;
-                                        while ($stmt->fetch()) {
-                                                $descr = file_get_contents('5bf5dee65aca1cd1497ac8f30ccaf2815e75401e/'.$description);
-                                                echo "<div>";
-                                                echo "<p>Publication number $number</p>";
-                                                echo "<table>";
-                                                echo "<tr>";
-                                                echo "<td>Title: ";
-                                                echo $descr;
-                                                echo "</td>";
-                                                echo "</tr>";
-                                                echo "<tr>";
-                                                echo "<td>User: ";
-                                                echo $priority;
-                                                echo "</td>";
-                                                echo "</tr>";
-                                                echo "<tr>";
-                                                echo "<td>Date: No</td>";
-                                                echo "</tr>";
-                                                echo "</table>";
-                                                $number++;
-                                                echo "<br>";
-                                                echo "<button src='submit' class='formbold-btn'>Access to publication</button>";
-                                                echo "</div>";
-                                        }
-                                        $stmt->close();
-                                ?>
+<h2>Latest publications</h2>
+<?php
+    $stmt = $con->prepare('SELECT file, user, title, date FROM blog');
+    $stmt->execute();
+    $stmt->bind_result($file, $user, $title, $date);
+    $number = 1;
+    while ($stmt->fetch()) {
+        $descr = file_get_contents('5bf5dee65aca1cd1497ac8f30ccaf2815e75401e/'.$file);
+        echo "<div>";
+        echo "<p>Publication number $number</p>";
+        echo "<table>";
+        echo "<tr>";
+        echo "<td>Title: ";
+        echo $title;
+        echo "</td>";
+        echo "</tr>";
+        echo "<tr>";
+        echo "<td>User: ";
+        echo $user;
+        echo "</td>";
+        echo "</tr>";
+        echo "<tr>";
+        echo "<td>Date: ";
+        echo $date;
+        echo "</td>";
+        echo "</tr>";
+        echo "</table>";
+        $number++;
+        echo "<br>";
+        echo "<form method='post' action='viewfile.php'>";
+        echo "<input type='hidden' name='description' value='$file'>";
+        echo "<button type='submit' class='formbold-btn'>Access to publication</button>";
+        echo "</form>";
+        echo "</div>";
+    }
+    $stmt->close();
+?>
                 </div>
         </body>
 </html>
