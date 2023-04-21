@@ -49,10 +49,34 @@ if (!isset($_COOKIE['auth'])) {
 			</div>
 		</nav>
                 <div class="content">
-                        <h2>Profile</h2>
-						<h3>Customize the application</h3>
+						<h2>Customize the application</h2>
 						<br>
-						<p>Use your own XML configuration files to customize the application (In development)</p>
+						<p>
+							Use your own XML configuration files to customize the application.
+						</p>
+							<pre>
+							Expected format:
+							<b>
+							&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+							&lt;config&gt;
+								&lt;Font-size&gt;
+									&lt;size&gt;12&lt;/size&gt;
+								&lt;/Font-size&gt;
+								&lt;Background-color&gt;
+									&lt;color&gt;White&lt;/color&gt;
+								&lt;/Background-color&gt;
+							&lt;/config&gt;
+							</pre>
+							</b>
+							THIS FEAUTRE IS CURRENTLY UNDER DEVELOPMENT. IT MIGHT NOT WORK AS EXPECTED. SORRY FOR THE INCONVENIENCES.
+						<p>
+						Current config:
+						<br>
+						<br>
+						Font-size:
+						<br>
+						Background-color:
+						</p>
                         <div class="formbold-main-wrapper">
                             <div class="formbold-form-wrapper">
                                 <form action="users.php" method="POST">
@@ -74,29 +98,8 @@ if (!isset($_COOKIE['auth'])) {
                                 </form>
                             </div>
                         </div>
-                        <?php if(isset($user_info)): ?>
-                        <h3>User information</h3>
-							<div>
-								<p>Searched user's information can be found below:</p>
-								<table>
-									<tr>
-										<td>Username:</td>
-										<td><?php
-                                        if ($user_info["Username"] !== null) {
-                                            echo $user_info["Username"];
-                                        } else {
-                                            echo "The provided user does not exist";
-                                        }
-                                        ?>
-                                        </td>
-									</tr>
-									<tr>
-										<td>Email:</td>
-										<td><?php echo $user_info["Email"]; ?></td>
-									</tr>
-								</table>
-						</div>
-                        <?php endif; ?>
+                        <h2>Data backup</h2>
+						
                 </div>
 	</body>
 </html>

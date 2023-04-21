@@ -17,12 +17,12 @@ JWT_ALGORITHM = "HS256"
 
 # Define the register endpoint
 @app.post('/register')
-async def register(username: str = Body(...), password: str = Body(...), role: Optional[str] = Body("user")):
+async def register(email: str = Body(...), username: str = Body(...), password: str = Body(...), role: Optional[str] = Body("user")):
     # Check if user already exists
     if users_collection.find_one({'username': username}):
         raise HTTPException(status_code=400, detail='User already exists')
     # Create user
-    user = {'username': username, 'password': password, 'role': role}
+    user = {'username': username, 'password': password, 'email': email, 'role': role}
     users_collection.insert_one(user)
     return {'message': 'User created successfully'}
 
@@ -58,6 +58,22 @@ async def get_user(username: Any, request: Request):
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
+@app.put('/user/email')
+async def update_email(request: Request, username: Any = Body(...), email: Any = Body(...)):
+    auth = request.headers.get("auth")
+    try:
+        jwt.decode(auth, "mustangs", algorithms=["HS256"])
+    except jwt.exceptions.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    
+    # Check if the user exists
+    user = users_collection.find_one({'username': username})
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid request")
+
+    # Update the user's email
+    users_collection.update_one({'username': username}, {'$set': {'email': email}})
+    return {'message': 'Email updated successfully'}
 
 if __name__ == '__main__':
     import uvicorn

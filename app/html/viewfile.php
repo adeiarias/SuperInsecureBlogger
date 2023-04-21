@@ -44,17 +44,15 @@ if (!isset($_COOKIE['auth'])) {
 			</div>
 		</nav>
 		<div class="content">
-			<h2>Review recently created task</h2>
-            <div class="formbold-form-wrapper">
-                <form action="view.php" method="POST">
-                <input type="hidden" name="file" value="<?php echo $_POST['description']; ?>"> 
-                <p>Recently created task content can be accessed here:
-                <br>
-                <br>
-                <button type="submit" class="formbold-btn">View content</button>
-                </p>
-                </form>
-            </div>
+			<h2><?php echo $_POST['title']; ?></h2>
+			<?php
+				ob_start();
+				include "/var/www/html/5bf5dee65aca1cd1497ac8f30ccaf2815e75401e/".urldecode($_POST['file']);
+				$output = ob_get_clean();
+				echo "<p>";
+				echo htmlspecialchars($output, ENT_QUOTES, 'UTF-8');
+				echo"</p";
+			?>
 		</div>
 	</body>
 </html>

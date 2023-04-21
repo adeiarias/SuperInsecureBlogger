@@ -17,18 +17,13 @@ if (!isset($_COOKIE['auth'])) {
 		$decoded = JWT::decode($cookie, new Key($key, 'HS256'));
 		$decoded_array = (array) $decoded;
 		$user = $decoded_array['username'];
-		$role = $decoded_array['role'];
 
-        if ($stmt = $con->prepare('UPDATE users set email = ? where username = ?')) {
-            $stmt->bind_param('ss', $_POST['email'], $user);
-            $stmt->execute();
-            $stmt->close();
-            header('Location: ../profile.php');
-        } else {
-            echo 'Could not prepare statement!';
-        }
-
-        $stmt->close();
+		$command = 'curl -X PUT http://app:8000/user/email \
+		-H "Content-Type: application/json" \
+		-H "auth: '.$cookie.'" \
+		-d \'{"username": "'.$user.'", "email": "'.strval($_POST["email"]).'"}\'';
+		$response = exec($command);
+		header('Location: ../profile.php');
 
 	} catch (\Exception $e) {
 		header('Location: ../index.php');
