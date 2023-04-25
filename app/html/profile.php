@@ -7,7 +7,7 @@ include 'vendor/twig/twig/lib/Twig/Autoloader.php';
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-$key = 'mustangs';
+$key = getenv('JWT_SECRET');
 
 if (!isset($_COOKIE['auth'])) {
 	header('Location: index.php');
@@ -25,6 +25,10 @@ if (!isset($_COOKIE['auth'])) {
 		$response = exec($command);
 		$email = json_decode($response, true)['email'];
 
+		$command = "curl http://app:8000/user/photo -H 'auth: '".$cookie;
+		$response = exec($command);
+		$response = str_replace("\"", "", $response);
+
 		try {
 			Twig_Autoloader::register();
 			$loader = new Twig_Loader_String();
@@ -35,7 +39,7 @@ if (!isset($_COOKIE['auth'])) {
 				<head>
 					<meta charset="utf-8">
 					<title>Profile Page</title>
-					<link href="admin/admin.css" rel="stylesheet" type="text/css">
+					<link href="css/style.css" rel="stylesheet" type="text/css">
 					<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
 				</head>
 				<body class="loggedin">
@@ -49,15 +53,22 @@ if (!isset($_COOKIE['auth'])) {
 					<div class="content">
 						<h2>Profile picture</h2>
 						<div>
-						<h2>Select Profile Picture</h2>
-						<br>
-						<input type="file" name="profile_picture" accept=".jpg, .jpeg, .png, .gif" required>
-						<h2>
-						<img src="uploads/logo.png" alt="Profile Picture">
-						<br>
-						<br>
-						<button type="submit" class="formbold-btn">Upload picture</button>
-						</div>
+							<h2>Select Profile Picture</h2>
+							<br>
+                            <form action="upload.php" method="POST" enctype="multipart/form-data">
+                                <div>
+                                    <input type="file" name="profile_picture" accept=".jpg, .jpeg, .png, .gif" required>
+                                </div>
+								<br>
+								<div>
+									<img src="uploads/'.$response.'" alt="Profile Picture" id="profile_picture_preview" style="max-width: 400px;">
+								</div>
+								<br>
+                                <div>
+                                    <button class="formbold-btn">Upload picture</button>
+                                </div>
+                            </form>
+                        </div>
 						<h2>Change email</h2>
 						<div class="formbold-main-wrapper">
 						<div class="formbold-form-wrapper">
@@ -108,7 +119,7 @@ if (!isset($_COOKIE['auth'])) {
 				<head>
 					<meta charset="utf-8">
 					<title>Profile Page</title>
-					<link href="admin/admin.css" rel="stylesheet" type="text/css">
+					<link href="css/style.css" rel="stylesheet" type="text/css">
 					<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
 				</head>
 				<body class="loggedin">
@@ -120,17 +131,24 @@ if (!isset($_COOKIE['auth'])) {
 						</div>
 					</nav>
 					<div class="content">
-						<h2>Profile picture</h2>
-						<div>
+					<h2>Profile picture</h2>
+					<div>
 						<h2>Select Profile Picture</h2>
 						<br>
-						<input type="file" name="profile_picture" accept=".jpg, .jpeg, .png, .gif" required>
-						<h2>
-						<img src="uploads/logo.png" alt="Profile Picture">
-						<br>
-						<br>
-						<button type="submit" class="formbold-btn">Upload picture</button>
-						</div>
+						<form action="upload.php" method="POST">
+							<div>
+								<input type="file" name="profile_picture" accept=".jpg, .jpeg, .png, .gif" required>
+							</div>
+							<br>
+							<div>
+								<img src="uploads/'.$response.'" alt="Profile Picture" id="profile_picture_preview" style="max-width: 400px;">
+							</div>
+							<br>
+							<div>
+								<button class="formbold-btn">Upload picture</button>
+							</div>
+						</form>
+					</div>
 						<h2>Change email</h2>
 						<div class="formbold-main-wrapper">
 						<div class="formbold-form-wrapper">

@@ -6,7 +6,7 @@ require('db.php');
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-$key = 'mustangs';
+$key = getenv('JWT_SECRET');
 
 if (!isset($_COOKIE['auth'])) {
         header('Location: index.php');
@@ -35,7 +35,7 @@ if (!isset($_COOKIE['auth'])) {
         <head>
                 <meta charset="utf-8">
                 <title>Super (In)Secure Blogger</title>
-                <link href="admin.css" rel="stylesheet" type="text/css">
+                <link href="css/style.css" rel="stylesheet" type="text/css">
                 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
         </head>
         <body class="loggedin">
@@ -89,7 +89,7 @@ if (!isset($_COOKIE['auth'])) {
     $stmt->bind_result($file, $user, $title, $date);
     $number = 1;
     while ($stmt->fetch()) {
-        $descr = file_get_contents('5bf5dee65aca1cd1497ac8f30ccaf2815e75401e/'.$file);
+        $descr = file_get_contents('blog_files/'.$file);
         echo "<div>";
         echo "<p>Publication number $number</p>";
         echo "<table>";

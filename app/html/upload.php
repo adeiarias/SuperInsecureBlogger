@@ -1,42 +1,52 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Profile Picture Upload</title>
-</head>
-<body>
-
 <?php
-system("id");
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	// Check if the file was uploaded without errors
-	if(isset($_FILES["profile_picture"]) && $_FILES["profile_picture"]["error"] == 0) {
-		$target_dir = "uploads/";
-		$target_file = $target_dir . basename($_FILES["profile_picture"]["name"]);
-		$imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-		// Check if the file is a valid image file
-		if($imageFileType == "jpg" || $imageFileType == "png" || $imageFileType == "jpeg" || $imageFileType == "gif" ) {
-			// Move the uploaded file to the target directory
-			if(move_uploaded_file($_FILES["profile_picture"]["tmp_name"], $target_file)) {
-				echo "<h1>Profile Picture Uploaded Successfully</h1>";
-				echo "<img src='$target_file' alt='Profile Picture'>";
-			} else {
-				echo "<h1>Sorry, there was an error uploading your file.</h1>";
-			}
-		} else {
-			echo "<h1>Sorry, only JPG, JPEG, PNG & GIF files are allowed.</h1>";
-		}
-	} else {
-		echo "<h1>Sorry, there was an error uploading your file.</h1>";
+
+require __DIR__.'/vendor/autoload.php';
+require('db.php');
+
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
+$key = getenv('JWT_SECRET');
+
+if (!isset($_COOKIE['auth'])) {
+	header('Location: index.php');
+	exit;
+} else {
+	$cookie = $_COOKIE['auth'];
+	try {
+		$decoded = JWT::decode($cookie, new Key($key, 'HS256'));
+
+    ob_start(); // start output buffering
+
+    function updateProfilePicture($file_name, $cookie) {
+      $command = 'curl -X PUT http://app:8000/user/newphoto \
+          -H "Content-Type: application/json" \
+          -H "auth: '.$cookie.'" \
+          -d \'{"photo": "'.$file_name.'"}\'';
+      exec($command);
+    }
+
+    if (isset($_FILES['profile_picture'])) {
+      $file_name = $_FILES['profile_picture']['name'];
+      $file_tmp = $_FILES['profile_picture']['tmp_name'];
+      $upload_dir = 'uploads/';
+      $destination = $upload_dir . $file_name;
+      $cookie = $_COOKIE['auth'];
+      
+      if (move_uploaded_file($file_tmp, $destination)) {
+        updateProfilePicture($file_name, $cookie);
+        header('Location: profile.php');
+      } else {
+        header('Location: profile.php');
+      }
+    }
+
+    ob_end_flush(); // send output to the browser
+    
+	} catch (\Exception $e) {
+		header('Location: index.php');
+		exit;
 	}
 }
+
 ?>
-
-<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" enctype="multipart/form-data">
-    <h2>Select Profile Picture</h2>
-    <input type="file" name="profile_picture" accept=".jpg, .jpeg, .png, .gif" required>
-    <br>
-    <input type="submit" value="Upload Profile Picture" name="submit">
-</form>
-
-</body>
-</html>

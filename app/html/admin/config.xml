@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<Font_size>
+		<size>12</size>
+	</Font_size>
+	<Background_color>
+		<color>White</color>
+	</Background_color>
+</config>

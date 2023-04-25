@@ -6,7 +6,7 @@ require('db.php');
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-$key = 'mustangs';
+$key = getenv('JWT_SECRET');
 
 ob_start(); // start output buffering
 
@@ -21,7 +21,7 @@ if (!isset($_COOKIE['auth'])) {
 		$user = $decoded_array['username'];
 
         $filename = uniqid().'.txt';
-        system("echo ".$_POST['message']." > /var/www/html/5bf5dee65aca1cd1497ac8f30ccaf2815e75401e/".$filename);
+        system("echo ".$_POST['message']." > /var/www/html/blog_files/".$filename);
 
         if ($stmt = $con->prepare('INSERT INTO blog (file, user, title, date) VALUES (?, ?, ?, ?)')) {
             $stmt->bind_param('ssss', $filename, $user, $_POST['title'], date("Y-m-d H:i:s"));

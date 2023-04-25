@@ -4,7 +4,7 @@ require __DIR__.'/vendor/autoload.php';
 require('db.php');
 
 use Firebase\JWT\JWT;
-$key = 'mustangs';
+$key = getenv('JWT_SECRET');
 
 if ( !isset($_POST['username'], $_POST['password']) ) {
 	exit('Please fill both the username and password fields!');

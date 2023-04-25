@@ -24,7 +24,13 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./app/html:/var/www/html
+      - web_app_vol:/var/www/html
+    environment:
+      JWT_SECRET: mustangs
+      database: app
+      db_user: seper
+      db_passwd: OasBOrESteNDOMen
+      db_host: contenedor_mysql
     links:
       - contenedor_mysql
 
@@ -36,8 +42,13 @@ services:
       - mongo
     environment:
       - MONGO_URI=mongodb://mongo:27017/
+      - JWT_SECRET=mustangs
 
   mongo:
     image: mongo
     volumes:
       - ./auth_api/data/db:/data/db
+
+volumes:
+  web_app_vol:
+    driver: local

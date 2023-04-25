@@ -1,9 +1,9 @@
 <?php
 
-$DATABASE_HOST = 'contenedor_mysql';
-$DATABASE_USER = 'seper';
-$DATABASE_PASS = 'OasBOrESteNDOMen';
-$DATABASE_NAME = 'app';
+$DATABASE_HOST = getenv('db_host');
+$DATABASE_USER = getenv('db_user');
+$DATABASE_PASS = getenv('db_passwd');
+$DATABASE_NAME = getenv('database');
 // Try and connect using the info above.
 $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
 if ( mysqli_connect_errno() ) {
