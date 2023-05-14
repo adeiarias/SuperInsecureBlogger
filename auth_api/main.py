@@ -25,9 +25,6 @@ async def register(email: str = Body(...), username: str = Body(...), password: 
     if users_collection.find_one({'username': username}):
         raise HTTPException(status_code=400, detail='User already exists')
     # Create user
-    sha1 = hashlib.sha1()
-    sha1.update(password.encode('utf-8'))
-    password = sha1.hexdigest()
     user = {'username': username, 'password': password, 'email': email, 'role': role, 'photo': 'default.png'}
     users_collection.insert_one(user)
     return {'message': 'User created successfully'}
@@ -37,10 +34,6 @@ async def register(email: str = Body(...), username: str = Body(...), password: 
 @app.post('/login')
 async def login(username: Any = Body(...), password: Any = Body(...)):
     # Check if user exists and password is correct
-    sha1 = hashlib.sha1()
-    sha1.update(password.encode('utf-8'))
-    password = sha1.hexdigest()
-    
     query = {}
     query["username"] = username
     query["password"] = password
