@@ -45,7 +45,7 @@ services:
       - JWT_SECRET=mustangs
 
   mongo:
-    image: mongo
+    image: mongo:4.4.24
     volumes:
       - ./auth_api/data/db:/data/db
 
